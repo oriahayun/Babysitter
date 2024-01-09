@@ -7,6 +7,9 @@ import ServiceProviderRegister from './views/auth/ServiceProviderRegister';
 import Register from './views/auth/Register';
 import AdminLogin from './views/auth/AdminLogin';
 import Home from './views/Home';
+import RequiredUser from './components/RequiredUser';
+import Client from './views/admin/Client';
+import ServiceProvider from './views/admin/ServiceProvider';
 
 const App = () => {
   return (
@@ -14,7 +17,13 @@ const App = () => {
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<Home />} />
+          {/* Private Route */}
+          <Route element={<RequiredUser allowedRoles={['admin']} />}>
+            <Route path="admin/clients" element={<Client />} />
+            <Route path="admin/service-providers" element={<ServiceProvider />} />
+          </Route>
         </Route>
+
         <Route path="admin/login" element={<AdminLogin />} />
         <Route path="login" element={<Login />} />
         <Route path="register" element={<Register />} />

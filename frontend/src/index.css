@@ -35,6 +35,16 @@ code {
   margin-bottom: 100px;
 }
 
+.main-view {
+  margin-top: 100px;
+  margin-bottom: 100px;
+}
+
+.main-title {
+  font-weight: 600;
+  color: #272835;
+}
+
 .nav-link {
   font-weight: 600;
   color: #272835 !important;
@@ -185,4 +195,73 @@ a {
   font-size: 20px;
   font-weight: 500;
   cursor: pointer;
+}
+
+.form-control:focus, .form-control:active {
+  outline: none!important;
+  box-shadow: none!important;
+}
+
+.card {
+  border: none;
+  margin-bottom: 2rem;
+  box-shadow: 0 10px 20px rgba(18, 38, 63, .0313726);
+}
+
+.card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  word-wrap: break-word;
+  background-color: #fff;
+  background-clip: border-box;
+  border: 0 solid rgba(34, 41, 47, 0.125);
+  border-radius: 0.428rem;
+}
+
+.dropdown-item {
+  padding: 0.05rem 1.0rem;
+  clear: both;
+  text-align: inherit;
+  background-color: initial;
+  border: 0;
+}
+
+.dropdown-menu .dropdown-item {
+  cursor: pointer;
+}
+
+.dropdown-menu {
+  z-index: 1000;
+}
+
+.user-img {
+  height: 40px;
+  width: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
+.btn-danger {
+  --bs-btn-bg: #ff0066;
+  --bs-btn-hover-bg: #ff0066;
+}
+
+/* Default styles for the logo image */
+.logo-image {
+  height: 55px;
+  width: auto;
+}
+
+/* Media query for smaller devices (e.g., mobile) */
+@media (max-width: 767px) {
+  .logo-image {
+    height: 35px;
+    content: url('./assets/images/logo/logo.png'); /* Use the alternate logo image for smaller devices */
+  }
+}
+
+.navbar-toggler:active, .navbar-toggler:focus {
+  box-shadow: none;
 }
