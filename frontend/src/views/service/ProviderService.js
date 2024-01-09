@@ -1,6 +1,7 @@
 /* eslint-disable no-unused-vars */
 import { useEffect, useState } from 'react';
 import DataTable from 'react-data-table-component';
+import { useGetServicesQuery } from '../../redux/api/serviceAPI';
 import { useNavigate } from 'react-router-dom';
 import {
   Badge,
@@ -22,9 +23,8 @@ import {
   ModalBody,
   ModalFooter
 } from 'reactstrap';
-import { ChevronDown, MoreVertical, Archive, Search, Trash2 } from 'react-feather';
+import { ChevronDown, MoreVertical, Archive, Search, Trash2, Plus } from 'react-feather';
 import toast from 'react-hot-toast';
-import { useDeleteUserMutation, useGetUsersQuery } from '../../redux/api/userAPI';
 
 const renderRole = (row) => (
   <span className="text-truncate text-capitalize align-middle">
@@ -47,21 +47,21 @@ const renderStatus = (row) => {
 
 export const columns = () => [
   {
-    name: 'Firstname',
+    name: 'Title',
     maxwidth: '100px',
-    selector: (row) => `${row.firstName}`,
+    selector: (row) => `${row.title}`,
     sortable: true
   },
   {
-    name: 'Lastname',
+    name: 'Description',
     maxwidth: '100px',
-    selector: (row) => `${row.lastName}`,
+    selector: (row) => `${row.description}`,
     sortable: true
   },
   {
-    name: 'Email',
+    name: 'Type',
     maxwidth: '100px',
-    selector: (row) => `${row.email}`,
+    selector: (row) => `${row.type}`,
     sortable: true
   },
   {
@@ -83,28 +83,28 @@ export const columns = () => [
     cell: (row) => {
       const navigate = useNavigate();
       const [modalVisibility, setModalVisibility] = useState(false);
-      const [deleteUser, { isLoading, isError, error, isSuccess }] = useDeleteUserMutation();
-      useEffect(() => {
-        if (isSuccess) {
-          toast.success(
-            <div className="d-flex align-items-center">
-              <span className="toast-title">User deleted successfully</span>
-            </div>,
-            {
-              duration: 4000,
-              position: 'top-right'
-            }
-          );
-          navigate('/admin/clients');
-        }
-        if (isError) {
-          toast.error(error.data.message, {
-            position: 'top-right'
-          });
-        }
-      }, [isLoading]);
+      // const [deleteUser, { isLoading, isError, error, isSuccess }] = useDeleteUserMutation();
+      // useEffect(() => {
+      //   if (isSuccess) {
+      //     toast.success(
+      //       <div className="d-flex align-items-center">
+      //         <span className="toast-title">User deleted successfully</span>
+      //       </div>,
+      //       {
+      //         duration: 4000,
+      //         position: 'top-right'
+      //       }
+      //     );
+      //     navigate('/admin/clients');
+      //   }
+      //   if (isError) {
+      //     toast.error(error.data.message, {
+      //       position: 'top-right'
+      //     });
+      //   }
+      // }, [isLoading]);
       const handleDeleteUser = (id) => {
-        deleteUser(id);
+        // deleteUser(id);
         setModalVisibility(false);
       };
       return (
@@ -151,56 +151,31 @@ export const columns = () => [
   }
 ];
 
-const Client = () => {
-  const [searchItem, setSearchItem] = useState('');
-
-  const queryParams = {
-    q: searchItem,
-    role: 'client'
-  };
+const ProviderService = () => {
+  const navigate = useNavigate();
   const paginationRowsPerPageOptions = [15, 30, 50, 100];
-  const { data: users, isError, isSuccess, error, isLoading, refetch } = useGetUsersQuery(queryParams);
-  console.log(users);
-
-  const handleFilter = (q) => {
-    setSearchItem(q);
-  };
-
+  const { data: services } = useGetServicesQuery();
+  console.log(services);
   return (
     <div className="main-view">
       <Container>
         <Row className="my-3">
           <Col>
-            <h4 className="main-title">Clients</h4>
+            <h4 className="main-title">Services</h4>
+          </Col>
+        </Row>
+        <Row className="my-3">
+          <Col md="4">
+            <Button size="sm" color="danger" onClick={() => navigate('/service-provider/new-service')}>
+              <Plus size={14} />
+              <span className="align-middle "> Post Service </span>
+            </Button>
           </Col>
         </Row>
         <Card>
-          <CardBody>
-            <Row className="justify-content-end">
-              <Col md="3" className="d-flex align-items-center">
-                <InputGroup>
-                  <InputGroupText>
-                    <Search size={14} />
-                  </InputGroupText>
-                  <Input id="search-user" type="text" value={searchItem} onChange={(e) => handleFilter(e.target.value ? e.target.value : '')} />
-                </InputGroup>
-                {searchItem && (
-                  <Button
-                    size="sm"
-                    className="clear-link d-block"
-                    onClick={() => {
-                      handleFilter('');
-                    }}
-                    color="flat-light">
-                    clear
-                  </Button>
-                )}
-              </Col>
-            </Row>
-          </CardBody>
           <DataTable
-            title="Users"
-            data={users}
+            title="Services"
+            data={services}
             responsive
             className="react-dataTable"
             noHeader
@@ -215,4 +190,4 @@ const Client = () => {
   );
 };
 
-export default Client;
+export default ProviderService;

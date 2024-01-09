@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate } from 'react-router-dom';
 import {
   Collapse,
   Navbar,
@@ -28,6 +28,9 @@ const Header = () => {
   const userData = JSON.parse(getUserData());
   const navigate = useNavigate();
   const toggle = () => setIsOpen(!isOpen);
+  const location = useLocation();
+  console.log(location.pathname);
+  const currentRoute = location.pathname;
 
   useEffect(() => {
     if (isSuccess) {
@@ -62,7 +65,7 @@ const Header = () => {
                   ? '/admin/dashboard'
                   : userData.role === 'client'
                     ? '/client/dashboard'
-                    : '/serviceProvider/dashboard'
+                    : '/service-provider/dashboard'
                 : '/'
             }>
             <img
@@ -77,27 +80,82 @@ const Header = () => {
               {!accessToken && (
                 <>
                   <NavItem className="nav-item-responsive">
-                    <NavLink onClick={() => navigate('/login')}>Login</NavLink>
+                    <NavLink className={currentRoute.includes('login') ? 'active' : ''} onClick={() => navigate('/login')}>
+                      Login
+                    </NavLink>
                   </NavItem>
                   <NavItem className="nav-item-responsive">
-                    <NavLink onClick={() => navigate('/register')}>Register</NavLink>
+                    <NavLink className={currentRoute.includes('register') ? 'active' : ''} onClick={() => navigate('/register')}>
+                      Register
+                    </NavLink>
                   </NavItem>
                 </>
               )}
               {accessToken && userData?.role === 'admin' && (
                 <>
                   <NavItem className="nav-item-responsive">
-                    <NavLink onClick={() => navigate('/admin/dashboard')}>Home</NavLink>
+                    <NavLink className={currentRoute.includes('admin/dashboard') ? 'active' : ''} onClick={() => navigate('/admin/dashboard')}>
+                      Home
+                    </NavLink>
                   </NavItem>
                   <NavItem className="nav-item-responsive">
-                    <NavLink onClick={() => navigate('/admin/clients')}>Clients</NavLink>
+                    <NavLink className={currentRoute.includes('admin/clients') ? 'active' : ''} onClick={() => navigate('/admin/clients')}>
+                      Clients
+                    </NavLink>
                   </NavItem>
                   <NavItem className="nav-item-responsive">
-                    <NavLink onClick={() => navigate('/admin/service-providers')}>Service Providers</NavLink>
+                    <NavLink className={currentRoute.includes('admin/service-providers') ? 'active' : ''} onClick={() => navigate('/admin/service-providers')}>
+                      Service Providers
+                    </NavLink>
                   </NavItem>
                   <UncontrolledDropdown nav inNavbar>
                     <DropdownToggle nav caret>
                       <img src={userImg} alt="user" className="user-img" />
+                    </DropdownToggle>
+                    <DropdownMenu end>
+                      <DropdownItem onClick={onLogoutHandler}>Log out</DropdownItem>
+                    </DropdownMenu>
+                  </UncontrolledDropdown>
+                </>
+              )}
+              {accessToken && userData?.role === 'client' && (
+                <>
+                  <NavItem className="nav-item-responsive">
+                    <NavLink onClick={() => navigate('/client/dashboard')}>Home</NavLink>
+                  </NavItem>
+                  <NavItem className="nav-item-responsive">
+                    <NavLink onClick={() => navigate('/client/clients')}>Order</NavLink>
+                  </NavItem>
+                  <NavItem className="nav-item-responsive">
+                    <NavLink onClick={() => navigate('/client/message')}>Message</NavLink>
+                  </NavItem>
+                  <UncontrolledDropdown nav inNavbar>
+                    <DropdownToggle nav caret>
+                      <img src={userImg} alt="Client" className="user-img" />
+                    </DropdownToggle>
+                    <DropdownMenu end>
+                      <DropdownItem onClick={onLogoutHandler}>Log out</DropdownItem>
+                    </DropdownMenu>
+                  </UncontrolledDropdown>
+                </>
+              )}
+              {accessToken && userData?.role === 'serviceProvider' && (
+                <>
+                  <NavItem className="nav-item-responsive">
+                    <NavLink onClick={() => navigate('/service-provider/dashboard')}>Home</NavLink>
+                  </NavItem>
+                  <NavItem className="nav-item-responsive">
+                    <NavLink onClick={() => navigate('/service-provider/services')}>Services</NavLink>
+                  </NavItem>
+                  <NavItem className="nav-item-responsive">
+                    <NavLink onClick={() => navigate('/service-provider/orders')}>Orders</NavLink>
+                  </NavItem>
+                  <NavItem className="nav-item-responsive">
+                    <NavLink onClick={() => navigate('/service-provider/messages')}>Message</NavLink>
+                  </NavItem>
+                  <UncontrolledDropdown nav inNavbar>
+                    <DropdownToggle nav caret>
+                      <img src={userImg} alt="Service Provider" className="user-img" />
                     </DropdownToggle>
                     <DropdownMenu end>
                       <DropdownItem onClick={onLogoutHandler}>Log out</DropdownItem>

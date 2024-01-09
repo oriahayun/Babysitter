@@ -22,7 +22,7 @@ import {
   ModalBody,
   ModalFooter
 } from 'reactstrap';
-import { ChevronDown, MoreVertical, Archive, Search, Trash2 } from 'react-feather';
+import { ChevronDown, MoreVertical, Archive, Search, Trash2, CheckCircle, XCircle } from 'react-feather';
 import toast from 'react-hot-toast';
 import { useDeleteUserMutation, useGetUsersQuery } from '../../redux/api/userAPI';
 import Select from 'react-select';
@@ -49,13 +49,13 @@ const renderStatus = (row) => {
 export const columns = () => [
   {
     name: 'Firstname',
-    maxwidth: '100px',
+    maxwidth: '80px',
     selector: (row) => `${row.firstName}`,
     sortable: true
   },
   {
     name: 'Lastname',
-    maxwidth: '100px',
+    maxwidth: '80px',
     selector: (row) => `${row.lastName}`,
     sortable: true
   },
@@ -71,11 +71,13 @@ export const columns = () => [
   },
   {
     name: 'Address',
+    maxwidth: '100px',
     selector: (row) => `${row.address}`,
     sortable: true
   },
   {
     name: 'Status',
+    maxwidth: '100px',
     cell: (row) => renderStatus(row)
   },
   {
@@ -117,9 +119,17 @@ export const columns = () => [
                   <MoreVertical size={14} className="cursor-pointer action-btn" />
                 </DropdownToggle>
                 <DropdownMenu end container="body">
-                  <DropdownItem className="w-100" onClick={() => navigate(`/admin/clients/edit/${row._id}`)}>
+                  <DropdownItem className="w-100" onClick={() => navigate(`/admin/profile-review/${row._id}`)}>
+                    <CheckCircle size={14} className="mr-50" />
+                    <span className="align-middle mx-2">Approve</span>
+                  </DropdownItem>
+                  <DropdownItem className="w-100" onClick={() => navigate(`/admin/profile-review/${row._id}`)}>
+                    <XCircle size={14} className="mr-50" />
+                    <span className="align-middle mx-2">Decline</span>
+                  </DropdownItem>
+                  <DropdownItem className="w-100" onClick={() => navigate(`/admin/profile-review/${row._id}`)}>
                     <Archive size={14} className="mr-50" />
-                    <span className="align-middle mx-2">Edit</span>
+                    <span className="align-middle mx-2">Review</span>
                   </DropdownItem>
                   <DropdownItem className="w-100" onClick={() => setModalVisibility(!modalVisibility)}>
                     <Trash2 size={14} className="mr-50" />
