@@ -18,6 +18,11 @@ import ProviderMessage from './views/messages/ProviderMessage';
 import ProviderOrder from './views/order/ProviderOrder';
 import CreateProviderService from './views/service/CreateProviderService';
 import EditProviderService from './views/service/EditProviderService';
+import ClientServiceProvider from './views/client/ClientServiceProvider';
+import ClientDashboard from './views/dashboard/ClientDashboard';
+import ClientSeriveProviderView from './views/client/ClientServiceProviderView';
+import ClientProfile from './views/profile/ClientProfile';
+import ProviderProfile from './views/profile/ProviderProfile';
 
 const App = () => {
   return (
@@ -33,6 +38,12 @@ const App = () => {
           <Route element={<RequiredUser allowedRoles={['admin', 'client']} />}>
             <Route path="admin/profile-review/:id" element={<Profile />} />
           </Route>
+          <Route element={<RequiredUser allowedRoles={['client']} />}>
+            <Route path="client/dashboard" element={<ClientDashboard />} />
+            <Route path="client/service-providers" element={<ClientServiceProvider />} />
+            <Route path="client/service-providers/view/:id" element={<ClientSeriveProviderView />} />
+            <Route path="client/profile" element={<ClientProfile />} />
+          </Route>
           <Route element={<RequiredUser allowedRoles={['serviceProvider']} />}>
             <Route path="service-provider/dashboard" element={<ServiceProviderDashboard />} />
             <Route path="service-provider/services" element={<ProviderService />} />
@@ -40,6 +51,7 @@ const App = () => {
             <Route path="service-provider/services/edit-service/:id" element={<EditProviderService />} />
             <Route path="service-provider/orders" element={<ProviderOrder />} />
             <Route path="service-provider/messages" element={<ProviderMessage />} />
+            <Route path="service-provider/profile" element={<ProviderProfile />} />
           </Route>
         </Route>
 

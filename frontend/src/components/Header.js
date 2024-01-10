@@ -1,6 +1,6 @@
 /* eslint-disable no-unused-vars */
 import { useState, useEffect } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
+import { useLocation, useNavigate, Link } from 'react-router-dom';
 import {
   Collapse,
   Navbar,
@@ -21,6 +21,8 @@ import { getToken, getUserData } from '../utils/Utils';
 import { useLogoutUserMutation } from '../redux/api/getMeAPI';
 import toast from 'react-hot-toast';
 import NotificationDropdown from './NotificationDropdown';
+import { Power, User } from 'react-feather';
+import Avatar from './Avatar';
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -125,19 +127,52 @@ const Header = () => {
                     <NavLink onClick={() => navigate('/client/dashboard')}>Home</NavLink>
                   </NavItem>
                   <NavItem className="nav-item-responsive">
+                    <NavLink
+                      className={currentRoute.includes('client/service-providers') ? 'active' : ''}
+                      onClick={() => navigate('/client/service-providers')}>
+                      Service Providers
+                    </NavLink>
+                  </NavItem>
+                  <NavItem className="nav-item-responsive">
                     <NavLink onClick={() => navigate('/client/clients')}>Order</NavLink>
                   </NavItem>
                   <NavItem className="nav-item-responsive">
                     <NavLink onClick={() => navigate('/client/message')}>Message</NavLink>
                   </NavItem>
-                  <UncontrolledDropdown nav inNavbar>
+                  <UncontrolledDropdown tag="li" className="dropdown-user nav-item">
+                    <DropdownToggle href="/" tag="a" className="nav-link dropdown-user-link" onClick={(e) => e.preventDefault()}>
+                      <div className="user-nav d-sm-flex d-none">
+                        <span className="user-name fw-bold">{(userData && userData['firstName']) || ''}</span>
+                        <span className="user-status">{(userData && userData.role) || 'Admin'}</span>
+                      </div>
+                      <Avatar img={userImg} imgHeight="40" imgWidth="40" status="online" />
+                    </DropdownToggle>
+                    <DropdownMenu end>
+                      <DropdownItem tag={Link} to="/client/profile">
+                        <User size={18} className="me-50" />
+                        <span className="align-middle">Profile</span>
+                      </DropdownItem>
+                      <DropdownItem tag={Link} to="/login" onClick={onLogoutHandler}>
+                        <Power size={18} className="me-50" />
+                        <span className="align-middle">Logout</span>
+                      </DropdownItem>
+                    </DropdownMenu>
+                  </UncontrolledDropdown>
+                  {/* <UncontrolledDropdown nav inNavbar>
                     <DropdownToggle nav caret>
                       <img src={userImg} alt="Client" className="user-img" />
                     </DropdownToggle>
                     <DropdownMenu end>
-                      <DropdownItem onClick={onLogoutHandler}>Log out</DropdownItem>
+                      <DropdownItem onClick={() => navigate('/client/profile')}>
+                        <User size={14} className="me-75" />
+                        Profile
+                      </DropdownItem>
+                      <DropdownItem onClick={onLogoutHandler}>
+                        <Power size={14} className="me-75" />
+                        <span className="align-middle">Logout</span>
+                      </DropdownItem>
                     </DropdownMenu>
-                  </UncontrolledDropdown>
+                  </UncontrolledDropdown> */}
                 </>
               )}
               {accessToken && userData?.role === 'serviceProvider' && (
@@ -170,6 +205,7 @@ const Header = () => {
                       <img src={userImg} alt="Service Provider" className="user-img" />
                     </DropdownToggle>
                     <DropdownMenu end>
+                      <DropdownItem onClick={() => navigate('/service-provider/profile')}>Profile</DropdownItem>
                       <DropdownItem onClick={onLogoutHandler}>Log out</DropdownItem>
                     </DropdownMenu>
                   </UncontrolledDropdown>
