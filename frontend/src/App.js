@@ -23,6 +23,7 @@ import ClientDashboard from './views/dashboard/ClientDashboard';
 import ClientSeriveProviderView from './views/client/ClientServiceProviderView';
 import ClientProfile from './views/profile/ClientProfile';
 import ProviderProfile from './views/profile/ProviderProfile';
+import ClientMessage from './views/messages/ClientMessage';
 
 const App = () => {
   return (
@@ -43,6 +44,7 @@ const App = () => {
             <Route path="client/service-providers" element={<ClientServiceProvider />} />
             <Route path="client/service-providers/view/:id" element={<ClientSeriveProviderView />} />
             <Route path="client/profile" element={<ClientProfile />} />
+            <Route path="client/message" element={<ClientMessage />} />
           </Route>
           <Route element={<RequiredUser allowedRoles={['serviceProvider']} />}>
             <Route path="service-provider/dashboard" element={<ServiceProviderDashboard />} />

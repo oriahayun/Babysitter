@@ -17,24 +17,25 @@ import {
 import userImg from '../assets/images/user.png';
 import logo1Img from '../assets/images/logo-1.png';
 import logo2Img from '../assets/images/logo/logo.png';
-import { getToken, getUserData } from '../utils/Utils';
+import { getToken } from '../utils/Utils';
 import { useLogoutUserMutation } from '../redux/api/getMeAPI';
 import toast from 'react-hot-toast';
 import NotificationDropdown from './NotificationDropdown';
 import { Power, User } from 'react-feather';
 import Avatar from './Avatar';
+import { useAppSelector } from '../redux/store';
 
 const Header = () => {
+  const user = useAppSelector((state) => state.userState.user);
   const [isOpen, setIsOpen] = useState(false);
   const [logoutUser, { isLoading, isSuccess, error, isError }] = useLogoutUserMutation();
   const accessToken = getToken();
-  const userData = JSON.parse(getUserData());
   const navigate = useNavigate();
   const toggle = () => setIsOpen(!isOpen);
   const location = useLocation();
-  console.log(location.pathname);
-  const currentRoute = location.pathname;
 
+  const currentRoute = location.pathname;
+  console.log(user);
   useEffect(() => {
     if (isSuccess) {
       window.location.href = '/login';
@@ -63,13 +64,7 @@ const Header = () => {
         <Navbar full="true" expand="md">
           <NavbarBrand
             href={
-              accessToken
-                ? userData?.role === 'admin'
-                  ? '/admin/dashboard'
-                  : userData.role === 'client'
-                    ? '/client/dashboard'
-                    : '/service-provider/dashboard'
-                : '/'
+              accessToken ? (user?.role === 'admin' ? '/admin/dashboard' : user?.role === 'client' ? '/client/dashboard' : '/service-provider/dashboard') : '/'
             }>
             <img
               src={logo1Img}
@@ -94,7 +89,7 @@ const Header = () => {
                   </NavItem>
                 </>
               )}
-              {accessToken && userData?.role === 'admin' && (
+              {accessToken && user?.role === 'admin' && (
                 <>
                   <NavItem className="nav-item-responsive">
                     <NavLink className={currentRoute.includes('admin/dashboard') ? 'active' : ''} onClick={() => navigate('/admin/dashboard')}>
@@ -113,7 +108,7 @@ const Header = () => {
                   </NavItem>
                   <UncontrolledDropdown nav inNavbar>
                     <DropdownToggle nav caret>
-                      <img src={userImg} alt="user" className="user-img" />
+                      <img src={user.avatar ? user.avatar : userImg} alt="user" className="user-img" />
                     </DropdownToggle>
                     <DropdownMenu end>
                       <DropdownItem onClick={onLogoutHandler}>Log out</DropdownItem>
@@ -121,7 +116,7 @@ const Header = () => {
                   </UncontrolledDropdown>
                 </>
               )}
-              {accessToken && userData?.role === 'client' && (
+              {accessToken && user?.role === 'client' && (
                 <>
                   <NavItem className="nav-item-responsive">
                     <NavLink onClick={() => navigate('/client/dashboard')}>Home</NavLink>
@@ -134,7 +129,7 @@ const Header = () => {
                     </NavLink>
                   </NavItem>
                   <NavItem className="nav-item-responsive">
-                    <NavLink onClick={() => navigate('/client/clients')}>Order</NavLink>
+                    <NavLink onClick={() => navigate('/client/orders')}>Order</NavLink>
                   </NavItem>
                   <NavItem className="nav-item-responsive">
                     <NavLink onClick={() => navigate('/client/message')}>Message</NavLink>
@@ -142,10 +137,10 @@ const Header = () => {
                   <UncontrolledDropdown tag="li" className="dropdown-user nav-item">
                     <DropdownToggle href="/" tag="a" className="nav-link dropdown-user-link" onClick={(e) => e.preventDefault()}>
                       <div className="user-nav d-sm-flex d-none">
-                        <span className="user-name fw-bold">{(userData && userData['firstName']) || ''}</span>
-                        <span className="user-status">{(userData && userData.role) || 'Admin'}</span>
+                        <span className="user-name fw-bold">{(user && user['firstName']) || ''}</span>
+                        <span className="user-status">{(user && user.role) || 'Admin'}</span>
                       </div>
-                      <Avatar img={userImg} imgHeight="40" imgWidth="40" status="online" />
+                      <Avatar img={user.avatar ? user.avatar : userImg} imgHeight="40" imgWidth="40" status="online" />
                     </DropdownToggle>
                     <DropdownMenu end>
                       <DropdownItem tag={Link} to="/client/profile">
@@ -158,24 +153,9 @@ const Header = () => {
                       </DropdownItem>
                     </DropdownMenu>
                   </UncontrolledDropdown>
-                  {/* <UncontrolledDropdown nav inNavbar>
-                    <DropdownToggle nav caret>
-                      <img src={userImg} alt="Client" className="user-img" />
-                    </DropdownToggle>
-                    <DropdownMenu end>
-                      <DropdownItem onClick={() => navigate('/client/profile')}>
-                        <User size={14} className="me-75" />
-                        Profile
-                      </DropdownItem>
-                      <DropdownItem onClick={onLogoutHandler}>
-                        <Power size={14} className="me-75" />
-                        <span className="align-middle">Logout</span>
-                      </DropdownItem>
-                    </DropdownMenu>
-                  </UncontrolledDropdown> */}
                 </>
               )}
-              {accessToken && userData?.role === 'serviceProvider' && (
+              {accessToken && user?.role === 'serviceProvider' && (
                 <>
                   <NavItem className="nav-item-responsive">
                     <NavLink onClick={() => navigate('service-provider/dashboard')}>Home</NavLink>
@@ -202,7 +182,7 @@ const Header = () => {
                   <NotificationDropdown />
                   <UncontrolledDropdown nav inNavbar>
                     <DropdownToggle nav caret>
-                      <img src={userImg} alt="Service Provider" className="user-img" />
+                      <img src={user.avatar ? user.avatar : userImg} alt="Service Provider" className="user-img" />
                     </DropdownToggle>
                     <DropdownMenu end>
                       <DropdownItem onClick={() => navigate('/service-provider/profile')}>Profile</DropdownItem>

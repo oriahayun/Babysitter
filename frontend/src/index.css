@@ -476,7 +476,7 @@ html body p {
   display: inline-table;
 }
 
-.chat-fixed-search .input-group:focus-within {
+.chat-fixed-search.input-group:focus-within {
   background-color: transparent;
   box-shadow: none;
 }
@@ -879,16 +879,16 @@ li.dropdown-notification .dropdown-menu-footer {
   font-size: 0.95rem;
 }
 
-.input-group {
+.search-provider.input-group {
   box-shadow: 0 2px 8px 0 rgba(34, 41, 47, 0.14);
   border-radius: 0.3rem;
 }
 
-.search-provider, .input-group-text {
+.search-provider.input-group-text {
   border: none;
 }
 
-.input-group-text {
+.search-provider.input-group-text {
   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
   height: 48px;
   font-size: 0.95rem;
@@ -1195,7 +1195,7 @@ ul.navbar-nav li.dropdown-user .dropdown-menu {
 .dropdown-item:active, .dropdown-item:hover {
   color: #fff;
   text-decoration: none;
-  background-color: #7367f0;
+  background-color: #ff0066;
 }
 
 .dropdown-item {
@@ -1209,4 +1209,29 @@ ul.navbar-nav li.dropdown-user .dropdown-menu {
   white-space: nowrap;
   background-color: transparent;
   border: 0;
+}
+
+.is-invalid {
+  border-color: #ea5455 !important;
+}
+
+.react-select.is-invalid .select__control {
+  border-color: #ea5455;
+}
+
+.avatar-style {
+  top: 5px;
+  left: 8px;
+}
+
+.avatar-button {
+  background-color: #7367f0;
+  color: #fff;
+  width: 30px;
+  height: 30px;
+  border: none;
+  border-radius: 50%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

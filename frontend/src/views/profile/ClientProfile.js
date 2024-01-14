@@ -1,13 +1,14 @@
 /* eslint-disable react/jsx-no-duplicate-props */
 /* eslint-disable no-unused-vars */
-import { Card, CardBody, Col, Container, Form, FormGroup, Label, Row } from 'reactstrap';
+import { Button, Card, CardBody, Col, Container, Form, FormGroup, Label, Row } from 'reactstrap';
 import userImg from '../../assets/images/user.png';
 import { useForm } from 'react-hook-form';
 import SpinnerComponent from '../../components/SpinnerComponent';
 import { getDateFormat } from '../../utils/Utils';
-import { getMeAPI } from '../../redux/api/getMeAPI';
+import { getMeAPI, useUploadProfileAvatarMutation } from '../../redux/api/getMeAPI';
 import classnames from 'classnames';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import { Edit, Edit2 } from 'react-feather';
 
 const ClientProfile = () => {
   const {
@@ -17,16 +18,38 @@ const ClientProfile = () => {
     formState: { errors }
   } = useForm();
   const { data: user, isLoading } = getMeAPI.endpoints.getMe.useQuery(null);
-  console.log(user, isLoading);
+  const [uploadProfileAvatar, { isLoading: avatarIsLoading, isError, error, isSuccess }] = useUploadProfileAvatarMutation();
+  const [avatarFile, setAvatarFile] = useState(null);
+  // console.log(user, isLoading);
 
   useEffect(() => {
     if (user) {
-      const fields = ['firstName', 'lastName', 'email', 'address'];
+      const fields = ['firstName', 'lastName', 'email', 'address', 'rate', 'description'];
       fields.forEach((field) => setValue(field, user[field]));
+      if (user.avatar) {
+        setAvatarFile(user.avatar);
+      }
     }
-  });
+  }, []);
 
   const onSubmit = (data) => {};
+  const handleAvatar = () => {
+    const fileInput = document.getElementById('updateAvatar');
+    fileInput.click();
+  };
+
+  const manageAvatar = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        setAvatarFile(event.target.result);
+      };
+      reader.readAsDataURL(file);
+
+      uploadProfileAvatar(file);
+    }
+  };
 
   return (
     <div className="main-view">
@@ -35,11 +58,26 @@ const ClientProfile = () => {
           <CardBody>
             {!isLoading ? (
               <Form onSubmit={handleSubmit(onSubmit)}>
+                <Row>
+                  <Col md="12" className="d-flex justify-content-end">
+                    <Button color="primary" className="btn-block btn-sm" type="submit">
+                      Update Profile
+                    </Button>
+                  </Col>
+                </Row>
                 <Row className="m-3">
-                  <Col md="4" sm="12">
+                  <Col md="3" sm="12">
                     <div>
-                      <div className="my-3">
-                        <img src={userImg} alt="Profile" className="profile-img" />
+                      <div className="mb-3">
+                        <div className="position-relative">
+                          <img src={avatarFile ? avatarFile : userImg} alt="Profile" className="profile-img" />
+                          <label htmlFor="updateAvatar" className="position-absolute avatar-style">
+                            <button type="button" className="avatar-button" onClick={handleAvatar}>
+                              <Edit2 size={14} />
+                            </button>
+                          </label>
+                          <input type="file" id="updateAvatar" className="visually-hidden" onChange={manageAvatar} />
+                        </div>
                       </div>
                       <FormGroup>
                         <Label className="mb-0">First Name:</Label>
@@ -81,8 +119,18 @@ const ClientProfile = () => {
                       </div>
                     </div>
                   </Col>
-                  <Col md="8" sm="12">
+                  <Col md="9" sm="12">
                     <div>
+                      <FormGroup>
+                        <Label className="mb-0">Hourly Rate:</Label>
+                        <input
+                          type="text"
+                          id="rate"
+                          name="rate"
+                          className={`form-control ${classnames({ 'is-invalid': errors.rate })}`}
+                          {...register('rate', { required: true })}
+                        />
+                      </FormGroup>
                       <FormGroup>
                         <Label className="mb-2">About:</Label>
                         <textarea
