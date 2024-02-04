@@ -57,6 +57,29 @@ router.get('/serviceProvider', verifyToken(['admin', 'client']), async (req, res
     const skip = (page - 1) * limit;
     const statusFilter = req.query.status !== '' && typeof req.query.status !== 'undefined' ? { status: req.query.status } : {};
     const searchQuery = typeof req.query.q !== 'undefined' ? req.query.q : '';
+    const user = await User.findById(req.user._id).select('-password -__v');
+    
+    const latitude = user.latitude;
+    const longitude = user.longitude;
+    const distanceRange = req.query.distance?.split('-');
+    const minDistance = distanceRange?.[0];
+    const maxDistance = distanceRange?.[1];
+    console.log(distanceRange)
+    // Build distance filter
+    let distanceFilter = {};
+
+    if (minDistance && maxDistance) {
+        distanceFilter = {
+            location: {
+                $geoWithin: {
+                    $centerSphere: [
+                        [longitude, latitude],
+                        maxDistance / 111.1
+                    ]
+                }
+            }
+        }
+    }
     const filterParams = {
         $and: [
             {
@@ -66,9 +89,11 @@ router.get('/serviceProvider', verifyToken(['admin', 'client']), async (req, res
                     { email: { $regex: searchQuery, $options: 'i' } },
                 ],
             },
-            statusFilter
+            statusFilter,
+            distanceFilter
         ],
     };
+    
     console.log(filterParams)
     const totalCount = await User.countDocuments(filterParams);
     const users = await User.find(filterParams).select('-password -__v').skip(skip).limit(limit);
@@ -99,7 +124,7 @@ router.get('/getUser/:id', verifyToken(['admin', 'client', 'serviceProvider']), 
 
 router.put('/upload/avatar', upload.single('avatar'), verifyToken(['admin', 'client', 'serviceProvider']), async (req, res) => {
     const imageUri = process.env.SERVER_URL + '/' + req.file.path.replace(/\\/g, '/').replace('public/', '');
-    const updateAvatar = await User.findOneAndUpdate({ _id: req.user._id }, {avatar: imageUri}, {new: true}).select('-password -__v');
+    const updateAvatar = await User.findOneAndUpdate({ _id: req.user._id }, { avatar: imageUri }, { new: true }).select('-password -__v');
 
     return res.send({ updateAvatar: updateAvatar })
 });

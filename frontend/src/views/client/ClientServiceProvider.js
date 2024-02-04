@@ -26,12 +26,19 @@ import userImg from '../../assets/images/user.png';
 
 const ClientServiceProvider = () => {
   const [searchItem, setSearchItem] = useState('');
+  const [distance, setDistance] = useState();
+  const [price, setPrice] = useState();
   const [page, setPage] = useState(1);
+  const [selectedTypes, setSelectedTypes] = useState([]);
+  console.log(selectedTypes);
 
   const queryParams = {
     q: searchItem,
     status: 'active',
-    page: page
+    page: page,
+    distance: distance,
+    price: price,
+    selectedTypes: selectedTypes
   };
   const { data: provider, isLoading } = useGetProvidersQuery(queryParams);
   console.log(provider);
@@ -123,6 +130,32 @@ const ClientServiceProvider = () => {
     }
     return stars;
   };
+
+  const handleDistanceChange = (e) => {
+    const selectedDistance = e.target.id == 'allDistance' ? null : e.target.id;
+    setDistance(selectedDistance);
+    console.log(selectedDistance);
+  };
+
+  const handlePriceChange = (e) => {
+    const selectedPrice = e.target.id == 'allPrice' ? null : e.target.id;
+    setPrice(selectedPrice);
+    console.log(selectedPrice);
+  };
+
+  const handleServiceTypeChange = (e) => {
+    const checked = e.target.checked;
+    const type = e.target.id;
+    if (checked) {
+      // Add type to selected array
+      setSelectedTypes([...selectedTypes, type]);
+    } else {
+      // Remove type from selected array
+      setSelectedTypes(selectedTypes.filter((t) => t !== type));
+    }
+    console.log(checked, type, selectedTypes);
+  };
+
   return (
     <div className="main-view">
       <Container>
@@ -136,35 +169,86 @@ const ClientServiceProvider = () => {
             <Card>
               <CardBody>
                 <div className="multi-range-price">
-                  <h6 className="filter-title mt-0">Multi Range</h6>
-                  <ul className="list-unstyled price-range">
+                  <h6 className="filter-title mt-0">Price Range</h6>
+                  <ul className="list-unstyled price-range" onChange={handlePriceChange}>
                     <li>
                       <div className="form-check">
-                        <Input type="radio" id="all" name="price-range-radio" defaultChecked />
-                        <Label className="form-check-label" for="all">
+                        <Input type="radio" id="allPrice" name="price-range-radio" defaultChecked />
+                        <Label className="form-check-label" for="allPrice">
                           All
                         </Label>
                       </div>
                     </li>
                     <li>
                       <div className="form-check">
-                        <Input type="radio" id="10-dollars-below" name="price-range-radio" />
-                        <Label className="form-check-label" for="10-dollars-below">{`<=$10`}</Label>
+                        <Input type="radio" id="<=10" name="price-range-radio" />
+                        <Label className="form-check-label" for="<=10">{`<=$10`}</Label>
                       </div>
                     </li>
                     <li>
                       <div className="form-check">
-                        <Input type="radio" id="10-100-dollars" name="price-range-radio" />
-                        <Label className="form-check-label" for="10-100-dollars">
+                        <Input type="radio" id="10-100" name="price-range-radio" />
+                        <Label className="form-check-label" for="10-100">
                           $10-$100
                         </Label>
                       </div>
                     </li>
                     <li>
                       <div className="form-check">
-                        <Input type="radio" id="100-500-dollars" name="price-range-radio" />
-                        <Label className="form-check-label" for="100-500-dollars">
+                        <Input type="radio" id="100-10000" name="price-range-radio" />
+                        <Label className="form-check-label" for="100>=">
                           {`>=$100`}
+                        </Label>
+                      </div>
+                    </li>
+                  </ul>
+                </div>
+                <div className="multi-range-distance">
+                  <h6 className="filter-title mt-0">Distance Range</h6>
+                  <ul className="list-unstyled distance-range" onChange={handleDistanceChange}>
+                    <li>
+                      <div className="form-check">
+                        <Input type="radio" id="allDistance" name="distance-range-radio" defaultChecked />
+                        <Label className="form-check-label" for="allDistance">
+                          All
+                        </Label>
+                      </div>
+                    </li>
+                    <li>
+                      <div className="form-check">
+                        <Input type="radio" id="<=5" name="distance-range-radio" />
+                        <Label className="form-check-label" for="distance1">{`<=5Km`}</Label>
+                      </div>
+                    </li>
+                    <li>
+                      <div className="form-check">
+                        <Input type="radio" id="5-10" name="distance-range-radio" />
+                        <Label className="form-check-label" for="5-10">
+                          5Km-10Km
+                        </Label>
+                      </div>
+                    </li>
+                    <li>
+                      <div className="form-check">
+                        <Input type="radio" id="10-20" name="distance-range-radio" />
+                        <Label className="form-check-label" for="10-20">
+                          10Km-20Km
+                        </Label>
+                      </div>
+                    </li>
+                    <li>
+                      <div className="form-check">
+                        <Input type="radio" id="20-40" name="distance-range-radio" />
+                        <Label className="form-check-label" for="20-40">
+                          20Km-40Km
+                        </Label>
+                      </div>
+                    </li>
+                    <li>
+                      <div className="form-check">
+                        <Input type="radio" id="40-10000" name="distance-range-radio" />
+                        <Label className="form-check-label" for="40>=">
+                          {`>=40Km`}
                         </Label>
                       </div>
                     </li>
@@ -177,7 +261,7 @@ const ClientServiceProvider = () => {
                       return (
                         <li key={index}>
                           <div className="form-check">
-                            <Input type="checkbox" id={serviceType.type} defaultChecked={serviceType.checked} />
+                            <Input type="checkbox" id={serviceType.type} defaultChecked={serviceType.checked} onChange={handleServiceTypeChange} />
                             <Label className="form-check-label" for={serviceType.type}>
                               {serviceType.type}
                             </Label>
@@ -197,20 +281,7 @@ const ClientServiceProvider = () => {
           </Col>
           <Col md="9">
             <Row className="my-3">
-              <Col sm="4">
-                <InputGroup className="input-group-merge">
-                  <Input
-                    className="search-provider"
-                    placeholder="Search Service Provider"
-                    value={searchItem}
-                    onChange={(e) => handleFilter(e.target.value ? e.target.value : '')}
-                  />
-                  <InputGroupText>
-                    <Search className="text-muted" size={14} />
-                  </InputGroupText>
-                </InputGroup>
-              </Col>
-              <Col sm="4">
+              <Col sm="12">
                 <InputGroup className="input-group-merge">
                   <Input
                     className="search-provider"
