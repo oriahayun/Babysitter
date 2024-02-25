@@ -181,8 +181,8 @@ const ClientServiceProvider = () => {
                     </li>
                     <li>
                       <div className="form-check">
-                        <Input type="radio" id="<=10" name="price-range-radio" />
-                        <Label className="form-check-label" for="<=10">{`<=$10`}</Label>
+                        <Input type="radio" id="0-10" name="price-range-radio" />
+                        <Label className="form-check-label" for="0-10">{`<=$10`}</Label>
                       </div>
                     </li>
                     <li>
@@ -196,7 +196,7 @@ const ClientServiceProvider = () => {
                     <li>
                       <div className="form-check">
                         <Input type="radio" id="100-10000" name="price-range-radio" />
-                        <Label className="form-check-label" for="100>=">
+                        <Label className="form-check-label" for="100-10000">
                           {`>=$100`}
                         </Label>
                       </div>
@@ -216,8 +216,8 @@ const ClientServiceProvider = () => {
                     </li>
                     <li>
                       <div className="form-check">
-                        <Input type="radio" id="<=5" name="distance-range-radio" />
-                        <Label className="form-check-label" for="distance1">{`<=5Km`}</Label>
+                        <Input type="radio" id="0-5" name="distance-range-radio" />
+                        <Label className="form-check-label" for="0-5">{`<=5Km`}</Label>
                       </div>
                     </li>
                     <li>
@@ -261,8 +261,8 @@ const ClientServiceProvider = () => {
                       return (
                         <li key={index}>
                           <div className="form-check">
-                            <Input type="checkbox" id={serviceType.type} defaultChecked={serviceType.checked} onChange={handleServiceTypeChange} />
-                            <Label className="form-check-label" for={serviceType.type}>
+                            <Input type="checkbox" id={serviceType.value} defaultChecked={serviceType.checked} onChange={handleServiceTypeChange} />
+                            <Label className="form-check-label" for={serviceType.value}>
                               {serviceType.type}
                             </Label>
                           </div>
@@ -304,18 +304,19 @@ const ClientServiceProvider = () => {
                     {provider.users.map((item, index) => (
                       <Card className="provider-service-card" key={index}>
                         <div className="item-img text-center mx-auto">
-                          <Link to={`/client/service-providers/view/${item._id}`}>
-                            <img className="img-fluid card-img-top" src={userImg} alt={item.firstName} />
+                          <Link to={`/client/service-providers/view/${item.user._id}`}>
+                            <img className="img-fluid card-img-top" src={userImg} alt={item.user.firstName} />
                           </Link>
                         </div>
                         <CardBody>
                           <h6 className="item-name">
-                            <Link className="text-body" to={`/client/service-providers/view/${item._id}`}>
+                            <Link className="text-body" to={`/client/service-providers/view/${item.user._id}`}>
                               <span className="provider-style">
-                                {item.firstName} {item.lastName}
+                                {item.user.firstName} {item.user.lastName}
                               </span>
                             </Link>
-                            <div className="provider-style my-2">{item.providerType}</div>
+                            <div className="provider-style my-2">{item.user.providerType}</div>
+                            <div className="provider-style my-2">Distance: {item.distance} km</div>
                           </h6>
                           <div className="item-wrapper">
                             <div className="item-rating">
@@ -330,18 +331,18 @@ const ClientServiceProvider = () => {
                         <div className="item-options text-center">
                           <div className="item-wrapper">
                             <div className="item-cost">
-                              <h4 className="item-price mb-2">${item.rate}</h4>
-                              {item.hasFreeShipping && (
+                              <h4 className="item-price mb-2">${item.user.rate}</h4>
+                              {item.user.hasFreeShipping && (
                                 <CardText className="shipping">
                                   <Badge color="light-success">Free Shipping</Badge>
                                 </CardText>
                               )}
                             </div>
                           </div>
-                          <Button className="btn-favourite" color="light" onClick={() => handleFavourite(item._id, item.isInFavourite)}>
+                          <Button className="btn-favourite" color="light" onClick={() => handleFavourite(item.user._id, item.user.isInFavourite)}>
                             <Heart
                               className={classnames('me-50', {
-                                'text-danger': item.isInFavourite
+                                'text-danger': item.user.isInFavourite
                               })}
                               size={18}
                             />

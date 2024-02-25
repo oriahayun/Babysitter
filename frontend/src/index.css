@@ -1267,7 +1267,7 @@ ul.navbar-nav li.dropdown-user .dropdown-menu {
   vertical-align: top;
   appearance: none;
   -webkit-print-color-adjust: exact;
-  color-adjust: exact;
+  print-color-adjust: exact;
 }
 
 .form-check-input {

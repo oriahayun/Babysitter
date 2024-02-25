@@ -4,6 +4,7 @@ const verifyToken = require('../utils/verifyToken');
 const mongoose = require('mongoose');
 const multer = require("multer");
 const path = require("path");
+const { getDistanceBetween } = require('../utils/utils');
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
@@ -55,31 +56,34 @@ router.get('/serviceProvider', verifyToken(['admin', 'client']), async (req, res
     const page = parseInt(req.query.page) || 1;
     const limit = 10;
     const skip = (page - 1) * limit;
-    const statusFilter = req.query.status !== '' && typeof req.query.status !== 'undefined' ? { status: req.query.status } : {};
+    const statusFilter = (req.query.status !== '' && req.query.status !== 'undefined')
+        ? { status: req.query.status }
+        : {};
     const searchQuery = typeof req.query.q !== 'undefined' ? req.query.q : '';
     const user = await User.findById(req.user._id).select('-password -__v');
-    
-    const latitude = user.latitude;
-    const longitude = user.longitude;
-    const distanceRange = req.query.distance?.split('-');
-    const minDistance = distanceRange?.[0];
-    const maxDistance = distanceRange?.[1];
-    console.log(distanceRange)
-    // Build distance filter
-    let distanceFilter = {};
-
-    if (minDistance && maxDistance) {
-        distanceFilter = {
-            location: {
-                $geoWithin: {
-                    $centerSphere: [
-                        [longitude, latitude],
-                        maxDistance / 111.1
-                    ]
-                }
+    console.log(typeof req.query.price, req.query.price)
+    const rateFilter = req.query.price && req.query.price !== 'null'
+        ? {
+            rate: {
+                $gte: parseInt(req.query.price.split('-')[0]),
+                $lte: parseInt(req.query.price.split('-')[1])
             }
         }
+        : {};
+
+    const providerFilter = req.query.selectedTypes ? { providerType: { $in: req.query.selectedTypes.split(',') } } : {}
+    const latitude = user.latitude;
+    const longitude = user.longitude;
+
+    let minDistance;
+    let maxDistance;
+    if (req.query.distance && (!req.query.distance.includes('null') || req.query.distance !== 'allDistance')) {
+        const distanceRange = req.query.distance?.split('-');
+        minDistance = distanceRange[0];
+        maxDistance = distanceRange[1];
     }
+    const roleFilter = { role: 'serviceProvider' };
+
     const filterParams = {
         $and: [
             {
@@ -90,17 +94,28 @@ router.get('/serviceProvider', verifyToken(['admin', 'client']), async (req, res
                 ],
             },
             statusFilter,
-            distanceFilter
+            roleFilter,
+            rateFilter,
+            providerFilter,
         ],
     };
-    
-    console.log(filterParams)
-    const totalCount = await User.countDocuments(filterParams);
+
     const users = await User.find(filterParams).select('-password -__v').skip(skip).limit(limit);
 
+    let providersWithDistance = users
+        .filter(user => user.address) // Filter out users without an address
+        .map(user => {
+            const distance = getDistanceBetween(latitude, longitude, user.latitude, user.longitude).toFixed(2);
+            return { distance, user };
+        });
+
+    if (minDistance && maxDistance) {
+        providersWithDistance = providersWithDistance.filter(obj => obj.distance >= parseFloat(minDistance) && obj.distance <= parseFloat(maxDistance));
+    }
+
     return res.send({
-        totalCount,
-        users,
+        totalCount: providersWithDistance.length,
+        users: providersWithDistance,
     })
 });
 
