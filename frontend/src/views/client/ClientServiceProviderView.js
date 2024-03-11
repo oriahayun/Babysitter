@@ -1,6 +1,6 @@
 import { Button, Card, CardBody, CardText, Col, Container, Row } from 'reactstrap';
 import classnames from 'classnames';
-import { Aperture, DollarSign, Heart, Share2, ShoppingCart, Star } from 'react-feather';
+import { Aperture, DollarSign, Share2, ShoppingCart, Star } from 'react-feather';
 import { useGetUserQuery } from '../../redux/api/userAPI';
 import { useParams } from 'react-router-dom';
 import SpinnerComponent from '../../components/SpinnerComponent';
@@ -9,10 +9,6 @@ import userImg from '../../assets/images/user.png';
 const ClientSeriveProviderView = () => {
   const { id } = useParams();
   const { data: provider, isLoading } = useGetUserQuery(id);
-
-  const handleFavourite = (favourite) => {
-    console.log(favourite);
-  };
   return (
     <div className="main-view">
       <Container>
@@ -30,7 +26,7 @@ const ClientSeriveProviderView = () => {
                     {provider.firstName} {provider.lastName}
                   </h4>
                   <div className="ecommerce-details-price d-flex flex-wrap mt-1">
-                    <p className="item-hourly my-2 mx-1">Hourly Rate: $ 25</p>
+                    <p className="item-hourly my-2 mx-1">Hourly Rate: $ {provider.rate}</p>
                   </div>
                   <div className="my-2">
                     <ul className="unstyled-list list-inline">
@@ -51,12 +47,7 @@ const ClientSeriveProviderView = () => {
                   <CardText>
                     Service Type -<span className="text-success ms-25 provider-style">{provider.providerType}</span>
                   </CardText>
-                  <CardText>
-                    On Retina display that never sleeps, so it’s easy to see the time and other important information, without raising or tapping the display.
-                    New location features, from a built-in compass to current elevation, help users better navigate their day, while international emergency
-                    calling1 allows customers to call emergency services directly from Apple Watch in over 150 countries, even without iPhone nearby. Apple
-                    Watch Series 5 is available in a wider range of materials, including aluminium, stainless steel, ceramic and an all-new titanium.
-                  </CardText>
+                  <CardText>{provider.description}</CardText>
                   <ul className="product-features list-unstyled">
                     {provider.hasFreeShipping ? (
                       <li>
@@ -85,19 +76,6 @@ const ClientSeriveProviderView = () => {
                     >
                       <Share2 className="me-50" size={14} />
                       Contact
-                    </Button>
-                    <Button
-                      className="btn-wishlist me-0 me-sm-1 mb-1 mb-sm-0"
-                      color="secondary"
-                      outline
-                      onClick={() => handleFavourite(provider.isInFavourite)}>
-                      <Heart
-                        size={14}
-                        className={classnames('me-50', {
-                          'text-danger': provider.isInFavourite
-                        })}
-                      />
-                      <span>Favourite</span>
                     </Button>
                     <Button color="danger" className="btn-contact move-contact">
                       <Aperture className="me-50" size={18} />

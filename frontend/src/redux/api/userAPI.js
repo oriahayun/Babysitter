@@ -94,6 +94,18 @@ export const userAPI = createApi({
         return result;
       }
     }),
+    manageStatusUser: builder.mutation({
+      query({ id, status }) {
+        return {
+          url: `/manageStatus/${id}`,
+          method: 'PUT',
+          credentials: 'include',
+          body: status
+        };
+      },
+      invalidatesTags: [{ type: 'Users', id: 'LIST' }],
+      transformResponse: (result) => result
+    }),
     deleteUser: builder.mutation({
       query(id) {
         return {
@@ -103,8 +115,28 @@ export const userAPI = createApi({
         };
       },
       invalidatesTags: [{ type: 'Users', id: 'LIST' }]
+    }),
+    manageFavouriteUser: builder.mutation({
+      query({ id }) {
+        return {
+          url: `/favourite/${id}`,
+          method: 'PUT',
+          credentials: 'include',
+          body: {}
+        };
+      },
+      invalidatesTags: [{ type: 'Users', id: 'LIST' }],
+      transformResponse: (result) => result
     })
   })
 });
 
-export const { useGetUsersQuery, useGetUserQuery, useGetProvidersQuery, useUpdateUserMutation, useDeleteUserMutation } = userAPI;
+export const {
+  useGetUsersQuery,
+  useGetUserQuery,
+  useGetProvidersQuery,
+  useUpdateUserMutation,
+  useDeleteUserMutation,
+  useManageStatusUserMutation,
+  useManageFavouriteUserMutation
+} = userAPI;

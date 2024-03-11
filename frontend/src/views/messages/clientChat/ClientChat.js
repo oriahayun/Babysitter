@@ -15,8 +15,9 @@ import io from 'socket.io-client';
 import { skipToken } from '@reduxjs/toolkit/query';
 
 const socket = io('http://localhost:3008');
+
 /* eslint-disable no-unused-vars */
-const ProviderChat = (props) => {
+const ClientChat = (props) => {
   const { messages, setMessages, selectedContact, selectedUser } = props;
   const [msg, setMsg] = useState('');
   const user = useAppSelector((state) => state.userState.user);
@@ -70,7 +71,7 @@ const ProviderChat = (props) => {
         room: selectedContact.contactId,
         text: msg,
         sender: user._id,
-        receiver: selectedUser?.client._id,
+        receiver: selectedUser?.provider._id,
         contact: selectedContact.contactId
       };
       socket.emit('chatMessage', message);
@@ -145,14 +146,14 @@ const ProviderChat = (props) => {
   const ChatWrapper = messages && Object.keys(messages).length && messages.chats ? PerfectScrollbar : 'div';
   return (
     <div className="chat-app-window">
-      <div className={classnames('start-chat-area', { 'd-none': (messages && messages.chats && messages.chats.length > 0) || selectedUser.client })}>
+      <div className={classnames('start-chat-area', { 'd-none': (messages && messages.chats && messages.chats.length > 0) || selectedUser.provider })}>
         <div className="start-chat-icon mb-1">
           <MessageSquare />
         </div>
         <h4 className="sidebar-toggle start-chat-text">Start Conversation</h4>
       </div>
       {selectedUser && Object.keys(selectedUser).length ? (
-        <div className={classnames('active-chat', { 'd-none': selectedUser.client === null })}>
+        <div className={classnames('active-chat', { 'd-none': selectedUser.provider === null })}>
           <div className="chat-navbar">
             <div className="chat-header">
               <div className="d-flex align-items-center">
@@ -162,12 +163,12 @@ const ProviderChat = (props) => {
                 <Avatar
                   imgHeight="36"
                   imgWidth="36"
-                  img={selectedUser.client?.avatar ? selectedUser.client.avatar : userImg}
+                  img={selectedUser.provider?.avatar ? selectedUser.provider.avatar : userImg}
                   // status={selectedUser?.provider?.status}
                   className="avatar-border user-profile-toggle m-0 me-3"
                 />
                 <h6 className="mb-0">
-                  {selectedUser.client?.firstName} {selectedUser.client?.lastName}
+                  {selectedUser.provider?.firstName} {selectedUser.provider?.lastName}
                 </h6>
               </div>
             </div>
@@ -201,4 +202,4 @@ const ProviderChat = (props) => {
   );
 };
 
-export default ProviderChat;
+export default ClientChat;

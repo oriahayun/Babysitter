@@ -30,3 +30,22 @@ export const getDateFormat = (formattedDate) => {
   const formattedDateTime = moment(formattedDateMoment).format('llll');
   return formattedDateTime;
 };
+
+export const formatDate = (dateString) => {
+  const date = new Date(dateString);
+  const options = { month: 'short', day: 'numeric' };
+  return new Intl.DateTimeFormat('en-US', options).format(date);
+};
+
+export const paymentSum = (payments) => {
+  let paymentSum = 0;
+  const sum = payments.reduce((total, payment) => {
+    return total + parseFloat(payment.amount);
+  }, paymentSum);
+  return sum;
+};
+
+export const checkFavourite = (favourite, user) => {
+  const checkFavouriteValue = favourite.includes(user);
+  return checkFavouriteValue;
+};

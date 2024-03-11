@@ -11,31 +11,31 @@ import { useState } from 'react';
 import { useAppSelector } from '../../../redux/store';
 import { formatDate } from '../../../utils/Utils';
 import io from 'socket.io-client';
-import { useReadProviderMessageMutation } from '../../../redux/api/contactAPI';
+import { useReadMessageMutation } from '../../../redux/api/contactAPI';
+
 const socket = io('http://localhost:3008');
 
-const ProviderSidebarLeft = (props) => {
+const ClientSidebarLeft = (props) => {
   // ** Props & Store
   const { chats } = props;
   const user = useAppSelector((state) => state.userState.user);
-
+  const [readMessage] = useReadMessageMutation();
   // ** State
   const [query, setQuery] = useState('');
   const [active, setActive] = useState(0);
   const [status, setStatus] = useState('online');
   const [filteredChat, setFilteredChat] = useState([]);
-  const [readProviderMessage] = useReadProviderMessageMutation();
 
-  const handleUserClick = async (id, client) => {
+  const handleUserClick = async (id, provider) => {
     socket.emit('joinRoom', id);
     props.setSelectedContact({
       contactId: id
     });
     props.setSelectedUser({
-      client: client
+      provider: provider
     });
     setActive(id);
-    await readProviderMessage({ contactId: id, data: client._id });
+    await readMessage({ contactId: id, data: provider._id });
   };
 
   // ** Handles Filter
@@ -66,7 +66,7 @@ const ProviderSidebarLeft = (props) => {
           return (
             <li
               key={item._id}
-              onClick={() => handleUserClick(item._id, item.client)}
+              onClick={() => handleUserClick(item._id, item.provider)}
               className={classnames({
                 active: active === item._id
               })}>
@@ -103,7 +103,7 @@ const ProviderSidebarLeft = (props) => {
   return (
     <div className="sidebar-left">
       <div className="sidebar">
-        <div className="sidebar-content">
+        <div className={classnames('sidebar-content')}>
           <div className="sidebar-close-icon">
             <X size={14} />
           </div>
@@ -132,4 +132,4 @@ const ProviderSidebarLeft = (props) => {
   );
 };
 
-export default ProviderSidebarLeft;
+export default ClientSidebarLeft;

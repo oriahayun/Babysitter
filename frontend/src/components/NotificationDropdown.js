@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable no-undef */
 // ** React Imports
 import { Fragment } from 'react';
@@ -7,10 +8,10 @@ import Avatar from './Avatar';
 // ** Third Party Components
 import classnames from 'classnames';
 import PerfectScrollbar from 'react-perfect-scrollbar';
-import { Bell, X, Check, AlertTriangle } from 'react-feather';
+import { Bell, X } from 'react-feather';
 
 // ** Reactstrap Imports
-import { Button, Badge, Input, DropdownMenu, DropdownItem, DropdownToggle, UncontrolledDropdown } from 'reactstrap';
+import { Badge, Input, DropdownMenu, DropdownItem, DropdownToggle, UncontrolledDropdown } from 'reactstrap';
 
 const NotificationDropdown = () => {
   // ** Notification Array
@@ -40,44 +41,6 @@ const NotificationDropdown = () => {
       title: (
         <p className="media-heading">
           <span className="fw-bolder">Revised Order 👋</span>&nbsp;checkout
-        </p>
-      )
-    },
-    {
-      title: <h6 className="fw-bolder me-auto mb-0">System Notifications</h6>,
-      switch: (
-        <div className="form-check form-switch">
-          <Input type="switch" name="customSwitch" id="exampleCustomSwitch" defaultChecked />
-        </div>
-      )
-    },
-    {
-      avatarIcon: <X size={14} />,
-      color: 'light-danger',
-      subtitle: 'USA Server is down due to hight CPU usage',
-      title: (
-        <p className="media-heading">
-          <span className="fw-bolder">Server down</span>&nbsp;registered
-        </p>
-      )
-    },
-    {
-      avatarIcon: <Check size={14} />,
-      color: 'light-success',
-      subtitle: 'Last month sales report generated',
-      title: (
-        <p className="media-heading">
-          <span className="fw-bolder">Sales report</span>&nbsp;generated
-        </p>
-      )
-    },
-    {
-      avatarIcon: <AlertTriangle size={14} />,
-      color: 'light-warning',
-      subtitle: 'BLR Server using high memory',
-      title: (
-        <p className="media-heading">
-          <span className="fw-bolder">High memory</span>&nbsp;usage
         </p>
       )
     }
@@ -169,11 +132,6 @@ const NotificationDropdown = () => {
           </DropdownItem>
         </li>
         {renderNotificationItems()}
-        <li className="dropdown-menu-footer">
-          <Button color="primary" block>
-            Read all notifications
-          </Button>
-        </li>
       </DropdownMenu>
     </UncontrolledDropdown>
   );
