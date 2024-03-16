@@ -47,8 +47,8 @@ const App = () => {
           </Route>
           <Route element={<RequiredUser allowedRoles={['client']} />}>
             <Route path="client/dashboard" element={<ClientDashboard />} />
-            <Route path="client/services" element={<ClientServiceProvider />} />
-            <Route path="client/services/view/:id" element={<ClientSeriveProviderView />} />
+            <Route path="client/service-providers" element={<ClientServiceProvider />} />
+            <Route path="client/service-providers/view/:id" element={<ClientSeriveProviderView />} />
             <Route path="client/orders" element={<ClientOrder />} />
             <Route path="client/orders/detail/:orderNumber" element={<ClientOrderDetail />} />
             <Route path="client/profile" element={<ClientProfile />} />

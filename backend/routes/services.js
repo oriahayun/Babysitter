@@ -250,16 +250,4 @@ router.delete('/delete/:id', verifyToken(['serviceProvider']), async (req, res) 
     return res.send({ message: 'successfully deleted!' });
 });
 
-router.put('/favourite/:id', verifyToken(['admin', 'client']), async (req, res) => {
-    const service = await Service.findById(req.params.id);
-    const isFavourite = service.favourite.includes(req.user._id);
-    if (!isFavourite) {
-        service.favourite.push(req.user._id);
-    } else if (isFavourite) {
-        service.favourite = service.favourite.filter(id => id.toString() !== req.user._id.toString());
-    }
-    const updatedService = await service.save();
-    return res.send({ updatedService: updatedService, message: 'Favourite successfully updated' });
-});
-
 module.exports = router;
