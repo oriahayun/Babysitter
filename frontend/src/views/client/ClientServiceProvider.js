@@ -47,6 +47,7 @@ const ClientServiceProvider = () => {
   const navigate = useNavigate();
   const [distance, setDistance] = useState(getFilterData('distance') ? JSON.parse(getFilterData('distance')) : [0, 1000]);
   const [price, setPrice] = useState(getFilterData('price') ? JSON.parse(getFilterData('price')) : [0, 100]);
+  const [favourite, setFavourite] = useState(getFilterData('favourite') ? JSON.parse(getFilterData('favourite')) : false);
   const {
     register,
     handleSubmit,
@@ -93,7 +94,8 @@ const ClientServiceProvider = () => {
     page: page,
     distance: distance,
     price: price,
-    selectedTypes: selectedTypes
+    selectedTypes: selectedTypes,
+    favourite: favourite
   };
 
   const { data: services, isLoading, refetch } = useGetProvidersQuery(queryParams);
@@ -225,7 +227,6 @@ const ClientServiceProvider = () => {
     } else {
       setSelectedTypes(selectedTypes.filter((t) => t !== type));
     }
-    console.log(type, checked);
     let updatedData = serviceTypes.map((item) => {
       if (item.value === type) {
         return { ...item, checked };
@@ -255,7 +256,7 @@ const ClientServiceProvider = () => {
     setServiceTypes(serviceTypeInitial);
   };
 
-  const handleOrderClick = () => {};
+  // const handleOrderClick = () => {};
 
   const handleClose = () => {
     setModalVisibility(!modalVisibility);
@@ -351,6 +352,27 @@ const ClientServiceProvider = () => {
                         </li>
                       );
                     })}
+                  </ul>
+                </div>
+                <div className="my-1">
+                  <h6 className="filter-title">Favourite Filter</h6>
+                  <ul className="list-unstyled price-range">
+                    <li>
+                      <div className="form-check">
+                        <Input
+                          type="checkbox"
+                          id="favourite"
+                          checked={favourite}
+                          onChange={() => {
+                            setFilterData('favourite', !favourite);
+                            setFavourite(!favourite);
+                          }}
+                        />
+                        <Label className="form-check-label" for="favourite">
+                          Favourite
+                        </Label>
+                      </div>
+                    </li>
                   </ul>
                 </div>
                 <div id="clear-filters">

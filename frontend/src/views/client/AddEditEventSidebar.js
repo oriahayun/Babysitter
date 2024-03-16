@@ -152,7 +152,6 @@ const AddEditEventSidebar = (props) => {
         if (isObjEmpty(selectedEvent) || (!isObjEmpty(selectedEvent) && !selectedEvent.title.length)) {
           handleAddEvent(data);
         } else {
-          console.log('------------------------', data);
           // handleUpdateEvent();
         }
         handleAddEventSidebar();

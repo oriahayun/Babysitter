@@ -89,3 +89,13 @@ export const selectThemeColors = (theme) => ({
     neutral30: '#ededed' // for input hover border-color
   }
 });
+
+export const getHourDifference = (start, end) => {
+  const startDate = new Date(start);
+  const endDate = new Date(end);
+
+  const diffInMilliseconds = Math.abs(endDate - startDate);
+  const hoursDifference = diffInMilliseconds / (1000 * 60 * 60);
+
+  return hoursDifference;
+};

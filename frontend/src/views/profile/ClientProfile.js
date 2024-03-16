@@ -148,7 +148,6 @@ const ClientProfile = () => {
   };
 
   const handleType = (e) => {
-    console.log(e.target.value, '----------');
     setEtype(e.target.value);
   };
 

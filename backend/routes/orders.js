@@ -70,7 +70,7 @@ router.get('/getOrderNumber/:orderNumber', verifyToken(['client', 'serviceProvid
 });
 
 router.post('/create', verifyToken(['client']), async (req, res) => {
-    console.log(req.body)
+    // console.log(req.body)
     const user = await User.findById({_id: req.body.provider});
     const userFromDate = moment(user.fromDate); // Convert MongoDB Date field to Moment.js object
     const userToDate = moment(user.toDate);

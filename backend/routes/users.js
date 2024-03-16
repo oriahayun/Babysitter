@@ -6,6 +6,7 @@ const multer = require("multer");
 const path = require("path");
 const { getDistanceBetween } = require('../utils/utils');
 const sgMail = require('@sendgrid/mail');
+const { ObjectId } = require('mongodb');
 sgMail.setApiKey(process.env.SENDGRID_APIKEY);
 
 const storage = multer.diskStorage({
@@ -141,6 +142,9 @@ router.get('/serviceProvider', verifyToken(['admin', 'client']), async (req, res
         : {};
 
     const providerFilter = req.query.selectedTypes ? { providerType: { $in: req.query.selectedTypes.split(',') } } : {}
+
+    const favouriteFilter = req.query.favourite === 'true' ? { favourite: { $in: [new ObjectId(req.user._id)] } } : {};
+
     const latitude = user.latitude;
     const longitude = user.longitude;
 
@@ -183,7 +187,8 @@ router.get('/serviceProvider', verifyToken(['admin', 'client']), async (req, res
                         },
                         statusFilter,
                         rateFilter,
-                        providerFilter
+                        providerFilter,
+                        favouriteFilter
                     ]
                 }
             },

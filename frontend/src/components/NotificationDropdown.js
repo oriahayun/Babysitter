@@ -22,7 +22,7 @@ const NotificationDropdown = () => {
   const [readNotifiction] = useReadNotifictionMutation();
   const navigate = useNavigate();
   const handleNotificate = (id, type) => {
-    console.log(type);
+    // console.log(type);
     if (type == 'order') {
       navigate(user.role == 'client' ? '/client/orders' : '/service-provider/orders');
     } else if (type == 'message') {

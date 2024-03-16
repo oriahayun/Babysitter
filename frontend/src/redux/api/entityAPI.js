@@ -60,7 +60,6 @@ export const entityAPI = createApi({
     }),
     deleteEntity: builder.mutation({
       query({ id, bodyData }) {
-        console.log(bodyData);
         return {
           url: `/delete/${id}`,
           method: 'POST',

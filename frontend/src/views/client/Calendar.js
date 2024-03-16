@@ -43,7 +43,7 @@ const Calendar = (props) => {
     },
 
     eventClick({ event: clickedEvent }) {
-      console.log(clickedEvent);
+      // console.log(clickedEvent);
       setSelectedEvent(clickedEvent);
       handleAddEventSidebar();
     },

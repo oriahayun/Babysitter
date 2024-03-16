@@ -13,12 +13,12 @@ import Client from './views/admin/Client';
 import ServiceProvider from './views/admin/ServiceProvider';
 import Profile from './views/profile/Profile';
 import ServiceProviderDashboard from './views/dashboard/ServiceProviderDashboard';
-import ProviderService from './views/service/ProviderService';
+// import ProviderService from './views/service/ProviderService';
 import Error404 from './views/Error404';
 import ProviderMessage from './views/messages/ProviderMessage';
 import ProviderOrder from './views/order/ProviderOrder';
-import CreateProviderService from './views/service/CreateProviderService';
-import EditProviderService from './views/service/EditProviderService';
+// import CreateProviderService from './views/service/CreateProviderService';
+// import EditProviderService from './views/service/EditProviderService';
 import ClientServiceProvider from './views/client/ClientServiceProvider';
 import ClientDashboard from './views/dashboard/ClientDashboard';
 import ClientSeriveProviderView from './views/client/ClientServiceProviderView';
@@ -57,9 +57,9 @@ const App = () => {
           </Route>
           <Route element={<RequiredUser allowedRoles={['serviceProvider']} />}>
             <Route path="service-provider/dashboard" element={<ServiceProviderDashboard />} />
-            <Route path="service-provider/services" element={<ProviderService />} />
+            {/* <Route path="service-provider/services" element={<ProviderService />} />
             <Route path="service-provider/services/create-service" element={<CreateProviderService />} />
-            <Route path="service-provider/services/edit-service/:id" element={<EditProviderService />} />
+            <Route path="service-provider/services/edit-service/:id" element={<EditProviderService />} /> */}
             <Route path="service-provider/orders" element={<ProviderOrder />} />
             <Route path="service-provider/messages" element={<ProviderMessage />} />
             <Route path="service-provider/profile" element={<ProviderProfile />} />
