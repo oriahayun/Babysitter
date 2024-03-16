@@ -36,6 +36,8 @@ const Message = require('./models/Message');
 const PaymentRoute = require('./routes/payments');
 const DashboardRoute = require('./routes/dashboard');
 const ReviewRoute = require('./routes/reviews');
+const NotificationRoute = require('./routes/notifications');
+const Notification = require('./models/Notification');
 
 // increase parse limit
 app.use(bodyParser.json({ limit: '50mb', extended: true }));
@@ -69,14 +71,15 @@ app.use('/api/contacts', contactRoute);
 app.use('/api/payments', PaymentRoute);
 app.use('/api/dashboards', DashboardRoute);
 app.use('/api/reviews', ReviewRoute);
+app.use('/api/notifications', NotificationRoute);
 
 const server = http.createServer(app);
 // Set up Socket.io with proper CORS handling
 const io = socketIo(server, {
     cors: {
-        origin: ['http://localhost:3000'], // Include all client app origins
-        methods: ["GET", "POST"], // Allowed methods
-        credentials: true // Enable credentials (cookies, sessions, etc.)
+        origin: ['http://localhost:3000'],
+        methods: ["GET", "POST"],
+        credentials: true
     }
 });
 
@@ -125,6 +128,14 @@ io.on('connection', (socket) => {
             }
         ]);
         io.emit('message', msg1[0]);
+        const notification = new Notification({
+            sender: msg.sender,
+            receiver: msg.receiver,
+            content: "You have new message!",
+            read: false,
+            type: 'message'
+        });
+        await notification.save()
     });
 
     socket.on('disconnect', () => {

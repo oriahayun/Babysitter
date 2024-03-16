@@ -1,13 +1,12 @@
 /* eslint-disable react/no-find-dom-node */
 /* eslint-disable react/prop-types */
-/* eslint-disable no-unused-vars */
 import ReactDOM from 'react-dom';
 import classnames from 'classnames';
-import { MessageSquare, Menu, Mic, Image, Send } from 'react-feather';
+import { MessageSquare, Menu, Send } from 'react-feather';
 import { useSelectChatQuery } from '../../../redux/api/contactAPI';
 import Avatar from '../../../components/Avatar';
 import { useEffect, useRef, useState } from 'react';
-import { Button, Form, Input, InputGroup, InputGroupText, Label } from 'reactstrap';
+import { Button, Form, Input, InputGroup } from 'reactstrap';
 import PerfectScrollbar from 'react-perfect-scrollbar';
 import { useAppSelector } from '../../../redux/store';
 import userImg from '../../../assets/images/user.png';
@@ -180,16 +179,7 @@ const ClientChat = (props) => {
 
           <Form className="chat-app-form" onSubmit={(e) => handleSendMsg(e)}>
             <InputGroup className="input-group-merge me-3 form-send-message">
-              <InputGroupText>
-                <Mic className="cursor-pointer" size={14} />
-              </InputGroupText>
               <Input value={msg} onChange={(e) => setMsg(e.target.value)} placeholder="Type your message or use speech to text" />
-              <InputGroupText>
-                <Label className="attachment-icon mb-0" for="attach-doc">
-                  <Image className="cursor-pointer text-secondary" size={14} />
-                  <input type="file" id="attach-doc" hidden />
-                </Label>
-              </InputGroupText>
             </InputGroup>
             <Button className="send" color="primary">
               <Send size={14} className="d-lg-none" />

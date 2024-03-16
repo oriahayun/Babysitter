@@ -1,6 +1,7 @@
 /* eslint-disable no-undef */
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
-import { getToken } from '../../utils/Utils';
+import { getToken, removeToken, removeUserData } from '../../utils/Utils';
+import { navigate } from 'raviger';
 
 const BASE_URL = process.env.REACT_APP_SERVER_ENDPOINT;
 
@@ -53,31 +54,18 @@ export const userAPI = createApi({
       },
       transformResponse(results) {
         return results.users;
-      }
-    }),
-    getProviders: builder.query({
-      query: (args) => {
-        return {
-          url: '/serviceProvider',
-          params: { ...args },
-          credentials: 'include'
-        };
       },
-      providesTags(result) {
-        if (result && result.users) {
-          return [
-            ...result.users.map(({ id }) => ({
-              type: 'Users',
-              id
-            })),
-            { type: 'Users', id: 'LIST' }
-          ];
-        } else {
-          return [{ type: 'Users', id: 'LIST' }];
+      onQueryStarted: async (arg, { queryFulfilled }) => {
+        try {
+          const result = await queryFulfilled;
+          return result;
+        } catch (error) {
+          if (error.error.originalStatus === 401) {
+            removeToken();
+            removeUserData();
+            navigate('/login');
+          }
         }
-      },
-      transformResponse(results) {
-        return results;
       }
     }),
     getUser: builder.query({
@@ -115,28 +103,10 @@ export const userAPI = createApi({
         };
       },
       invalidatesTags: [{ type: 'Users', id: 'LIST' }]
-    }),
-    manageFavouriteUser: builder.mutation({
-      query({ id }) {
-        return {
-          url: `/favourite/${id}`,
-          method: 'PUT',
-          credentials: 'include',
-          body: {}
-        };
-      },
-      invalidatesTags: [{ type: 'Users', id: 'LIST' }],
-      transformResponse: (result) => result
     })
   })
 });
 
-export const {
-  useGetUsersQuery,
-  useGetUserQuery,
-  useGetProvidersQuery,
-  useUpdateUserMutation,
-  useDeleteUserMutation,
-  useManageStatusUserMutation,
-  useManageFavouriteUserMutation
-} = userAPI;
+// Add error handling for 401 Unauthorized error
+
+export const { useGetUsersQuery, useGetUserQuery, useUpdateUserMutation, useDeleteUserMutation, useManageStatusUserMutation } = userAPI;
