@@ -26,7 +26,7 @@ router.post('/create', verifyToken(['client', 'serviceProvider']), async (req, r
     try {
         const savedPayment = await payment.save()
 
-        return res.send({ payment: "savedPayment", message: 'Payment Done successfully' });
+        return res.send({ payment: savedPayment, message: 'Payment Done successfully' });
     } catch (err) {
         return res.status(400).send(err);
     }

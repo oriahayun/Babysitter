@@ -1,7 +1,8 @@
 const Notification = require('../models/Notification');
 const Order = require('../models/Order');
-const Service = require('../models/Service');
+const Payment = require('../models/Payment');
 const User = require('../models/User');
+const { getBackendHourDifference } = require('../utils/utils');
 const verifyToken = require('../utils/verifyToken');
 const moment = require('moment');
 
@@ -125,10 +126,22 @@ router.put('/manageStatus/:id', verifyToken(['client', 'serviceProvider']), asyn
         read: false,
         type: 'order'
     });
-    await Order.findOneAndUpdate({ _id: req.params.id }, updateValues, {
+    const order = await Order.findOneAndUpdate({ _id: req.params.id }, updateValues, {
         new: true,
     });
-    await notification.save()
+    await notification.save();
+
+    if (req.body.status == 'completed') {
+        const orderData = await order.populate('provider');
+        const payment = new Payment({
+            client: orderData.client,
+            type: 'hourly',
+            amount: orderData.provider.rate * getBackendHourDifference(orderData.endDate, orderData.startDate),
+            provider: orderData.provider._id,
+            order: orderData._id
+        });
+        await payment.save();
+    }
     return res.send({ message: 'Order Status successfully updated' });
 });
 
